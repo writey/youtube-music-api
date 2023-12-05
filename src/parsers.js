@@ -385,6 +385,7 @@ exports.parseArtistPage = context => {
             itemContext, 'musicResponsiveListItemFlexColumnRenderer'
         ))
         result.products.songs.content.push({
+            videoId: utils.fv(itemContext, 'playlistItemData:videoId'),
             name: utils.fv(_.nth(flexColumn, 0), 'runs:text'),
             album: (function() {
                 var c = (utils.fv(_.nth(flexColumn, 2), 'runs'))
