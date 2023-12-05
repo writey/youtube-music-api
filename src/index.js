@@ -289,6 +289,27 @@ class YoutubeMusicApi {
                 .catch(error => reject(error))
         })
     }
+
+    getSongDetail(videoId) {
+      return new Promise((resolve, reject) => {
+        this._createApiRequest('player', {
+          videoId: videoId
+        })
+        .then(context => {
+          try {
+            resolve({
+              ...context.videoDetails,
+              duration: utils.hms2ms(context.videoDetails.lengthSeconds),
+              thumbnails: context.videoDetails.thumbnail
+            })
+          } catch (error) {
+            resolve({
+              error: error.message
+            })
+          }
+        })
+      })
+    }
 }
 
 module.exports = YoutubeMusicApi

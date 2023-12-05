@@ -673,7 +673,6 @@ exports.parseAlbumPage = context => {
     const albumTracks = utils.fv(
         context, 'musicResponsiveListItemRenderer'
     )
-
     if (Array.isArray(albumTracks)) {
       albumTracks.forEach((item) => {
           result.tracks.push({
@@ -683,6 +682,7 @@ exports.parseAlbumPage = context => {
                   .map(toArtistFromTextRun)
                   .filter(Boolean)
                   .map(({ name }) => name),
+              duration: utils.hms2ms(utils.fv(item, 'musicResponsiveListItemFixedColumnRenderer:runs:text', true)),
           });
       });
     } else {
@@ -693,6 +693,7 @@ exports.parseAlbumPage = context => {
               .map(toArtistFromTextRun)
               .filter(Boolean)
               .map(({ name }) => name),
+          duration: utils.hms2ms(utils.fv(albumTracks, 'musicResponsiveListItemFixedColumnRenderer:runs:text', true)),
       });
     }
 
