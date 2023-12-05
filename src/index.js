@@ -300,7 +300,7 @@ class YoutubeMusicApi {
             resolve({
               ...context.videoDetails,
               duration: utils.hms2ms(context.videoDetails.lengthSeconds),
-              thumbnails: context.videoDetails.thumbnails.thumbnails
+              thumbnails: context.videoDetails.thumbnail.thumbnails
             })
           } catch (error) {
             resolve({
