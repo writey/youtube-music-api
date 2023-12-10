@@ -388,6 +388,7 @@ exports.parseArtistPage = context => {
         result.products.songs.content.push({
             videoId: utils.fv(itemContext, 'playlistItemData:videoId'),
             name: utils.fv(_.nth(flexColumn, 0), 'runs:text'),
+            thumbnails: utils.fv(itemContext, 'musicThumbnailRenderer:thumbnails'),
             album: (function() {
                 var c = (utils.fv(_.nth(flexColumn, 2), 'runs'))
                 if (!Array.isArray(c) && c instanceof Object) return {
@@ -541,6 +542,7 @@ exports.parsePlaylistPage = context => {
             const flexColumn = utils.fv(
                 itemContext[i], 'musicResponsiveListItemFlexColumnRenderer', true
             )
+            console.log(JSON.stringify(flexColumn));
             result.content.push({
                 videoId: utils.fv(itemContext[i], 'playNavigationEndpoint:videoId'),
                 name: utils.fv(_.nth(flexColumn, 0), 'runs:text'),
@@ -564,6 +566,35 @@ exports.parsePlaylistPage = context => {
                         })
                     }
                     return 1 < a.length ? a : 0 < a.length ? a[0] : a
+                })(),
+                artist: (function() {
+                    var a = [],
+                        c = (utils.fv(_.nth(flexColumn, 1), 'runs'))
+                    if (Array.isArray(c)) {
+                        c = _.filter(c, function(o) {
+                            return o.navigationEndpoint
+                        })
+                        for (var i = 0; i < c.length; i++) {
+                            a.push({
+                                name: utils.fv(c[i], 'text'),
+                                browseId: utils.fv(c[i], 'browseEndpoint:browseId')
+                            })
+                        }
+                    } else {
+                        a.push({
+                            name: utils.fv(c, 'text'),
+                            browseId: utils.fv(c, 'browseEndpoint:browseId')
+                        })
+                    }
+                    return 1 < a.length ? a : 0 < a.length ? a[0] : a
+                })(),
+                album: (function() {
+                    var c = utils.fv(_.nth(flexColumn, 2), 'runs')
+                    if (!Array.isArray(c) && c instanceof Object) return {
+                        name: utils.fv(c, 'text'),
+                        browseId: utils.fv(c, 'browseEndpoint:browseId')
+                    }
+                    return {}
                 })(),
                 duration: utils.hms2ms(utils.fv(itemContext[i], 'musicResponsiveListItemFixedColumnRenderer:runs:text', true)),
                 thumbnails: utils.fv(itemContext[i], 'musicThumbnailRenderer:thumbnails')
@@ -671,12 +702,14 @@ exports.parseAlbumPage = context => {
     result.description = utils.fv(
         albumRelease, 'description:text'
     )
-
     const albumTracks = utils.fv(
         context, 'musicResponsiveListItemRenderer'
     )
+    console.log(JSON.stringify(context))
     if (Array.isArray(albumTracks)) {
       albumTracks.forEach((item) => {
+        // console.log(JSON.stringify(item))
+        console.log('\n');
           result.tracks.push({
               name: utils.fv(item, 'flexColumns:0:runs:text'),
               videoId: utils.fv(item, 'videoId')[0],

@@ -296,6 +296,7 @@ class YoutubeMusicApi {
           videoId: videoId
         })
         .then(context => {
+          console.log(context);
           try {
             resolve({
               ...context.videoDetails,
